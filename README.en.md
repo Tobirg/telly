@@ -4,7 +4,7 @@
 
 Rooting TVs with the **MT5889** SoC and the **MStar MBOOT (U-Boot 2011.06)** bootloader using Magisk. The **Telly** app on the TV itself backs up the boot partitions, patches the image and prepares the flash scripts, and you run them in the bootloader console over UART (the adapter connects to HDMI). Everything that depends on the model (partitions, RAM addresses, the active slot) is taken from the TV itself.
 
-**Tested on:** Tuvio TO55UFGCV5, DEXP 55OCG. It may work on other TVs with MT5889 and MBOOT, but that is not tested: start with the backup and the dry-run `check.txt`.
+**Tested on:** Tuvio TO55UFGCV5, DEXP 55OCG, Carrera №558 (CRLG558). It may work on other TVs with MT5889 and MBOOT, but that is not tested: start with the backup and the dry-run `check.txt`.
 
 <img src="docs/img/01-main.png" width="720" alt="Telly: main screen">
 
