@@ -1,4 +1,4 @@
-package com.tobirg.rootmate
+package com.tobirg.telly
 
 import java.util.concurrent.TimeUnit
 

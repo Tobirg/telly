@@ -21,7 +21,7 @@ import subprocess
 import sys
 import time
 
-PKG = 'com.tobirg.rootmate'
+PKG = 'com.tobirg.telly'
 ADB = os.environ.get('ADB', 'adb')
 
 

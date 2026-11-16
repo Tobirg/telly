@@ -1,4 +1,4 @@
-package com.tobirg.rootmate
+package com.tobirg.telly
 
 import android.app.Activity
 import android.graphics.Color

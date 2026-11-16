@@ -1,12 +1,12 @@
 # Telly: заметки по приложению (для доработок)
 
-Приложение для ТВ на Android TV (Changhong/Tuvio, MT5889). Делает то, что в `guide.md` приходится делать руками: включает UART, ставит Magisk и патчит boot-образ прямо на ТВ, без ПК. Версия 1.0, пакет `com.tobirg.rootmate`, minSdk 26, targetSdk 34, Kotlin, Material Components, без сторонних библиотек.
+Приложение для ТВ на Android TV (Changhong/Tuvio, MT5889). Делает то, что в `guide.md` приходится делать руками: включает UART, ставит Magisk и патчит boot-образ прямо на ТВ, без ПК. Версия 1.2, пакет `com.tobirg.telly`, minSdk 26, targetSdk 34, Kotlin, Material Components, без сторонних библиотек.
 
 ## Структура
 
 | Файл | Что делает |
 |---|---|
-| `app/src/main/java/com/tobirg/rootmate/MainActivity.kt` | Весь основной экран и вся логика: кнопки, скачивание и установка Magisk, патч образов, лог, прогресс |
+| `app/src/main/java/com/tobirg/telly/MainActivity.kt` | Весь основной экран и вся логика: кнопки, скачивание и установка Magisk, патч образов, лог, прогресс |
 | `.../FilePickerActivity.kt` | Свой файлпикер на `java.io.File` (без SAF). Стартует со списка накопителей, показывает папки и `.img` |
 | `.../PermissionsActivity.kt` | Экран двух разрешений: «Доступ ко всем файлам» и «Установка неизвестных приложений» |
 | `.../LedActivity.kt`, `Led.kt`, `Root.kt` | Экран «Индикатор питания» поверх модуля ядра ledctl (`assets/ledctl`, исходники в `ledctl/`), root-команды через `su`. Подробности: `docs/led.md` |

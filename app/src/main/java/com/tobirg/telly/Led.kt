@@ -1,4 +1,4 @@
-package com.tobirg.rootmate
+package com.tobirg.telly
 
 import android.content.Context
 import java.io.File

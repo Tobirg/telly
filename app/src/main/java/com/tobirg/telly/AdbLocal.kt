@@ -1,4 +1,4 @@
-package com.tobirg.rootmate
+package com.tobirg.telly
 
 import android.content.Context
 import android.util.Base64
@@ -135,7 +135,7 @@ object AdbLocal {
         b.put(littleEndian(n, 256))
         b.put(littleEndian(rr, 256))
         b.putInt(pub.publicExponent.toInt())
-        return (Base64.encodeToString(b.array(), Base64.NO_WRAP) + " rootmate@tv").toByteArray(Charsets.US_ASCII) + byteArrayOf(0)
+        return (Base64.encodeToString(b.array(), Base64.NO_WRAP) + " telly@tv").toByteArray(Charsets.US_ASCII) + byteArrayOf(0)
     }
 
     /** What the TV still needs for adb: developer options, USB debugging, adbd listening on tcp 5555. */

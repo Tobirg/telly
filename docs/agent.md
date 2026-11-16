@@ -32,8 +32,8 @@ Everything else the agent can do itself.
 ```
 adb connect <tv-ip>:5555
 adb install -r Telly-X.Y.apk
-adb shell appops set --uid com.tobirg.rootmate MANAGE_EXTERNAL_STORAGE allow
-adb shell appops set com.tobirg.rootmate REQUEST_INSTALL_PACKAGES allow
+adb shell appops set --uid com.tobirg.telly MANAGE_EXTERNAL_STORAGE allow
+adb shell appops set com.tobirg.telly REQUEST_INSTALL_PACKAGES allow
 adb install -r Magisk-vX.Y.apk           # or let Telly download it (button "Download and install Magisk")
 python scripts/agent/telly.py open    # Telly on screen
 ```
@@ -49,7 +49,7 @@ Commands sent while it is closed answer with an error that says how to open it. 
 Raw form (what `telly.py` sends):
 
 ```
-adb shell am broadcast -n com.tobirg.rootmate/.AgentReceiver -a com.tobirg.rootmate.AGENT --es cmd status
+adb shell am broadcast -n com.tobirg.telly/.AgentReceiver -a com.tobirg.telly.AGENT --es cmd status
 Broadcast completed: result=0, data="{...json...}"
 ```
 

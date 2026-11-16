@@ -1,4 +1,4 @@
-package com.tobirg.rootmate
+package com.tobirg.telly
 
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
