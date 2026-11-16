@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Power LED settings (ledctl kernel module): module status, standby mode, mode while on.
-     No "Done" button: every change is applied at once, Back closes the screen. -->
+<!-- Power LED settings (ledctl kernel module): three columns so everything fits one TV screen without scrolling:
+     module status, standby mode, mode while on. No "Done" button: changes apply at once, Back closes the screen. -->
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -12,231 +12,210 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical"
-        android:paddingStart="24dp"
-        android:paddingTop="16dp"
-        android:paddingEnd="24dp"
-        android:paddingBottom="16dp"
-        android:clipToPadding="false">
+        android:padding="12dp">
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
+            android:layout_marginBottom="12dp"
             android:fontFamily="sans-serif-medium"
             android:text="@string/led_title"
             android:textColor="@color/text_primary"
-            android:textSize="18sp" />
+            android:textSize="24sp" />
 
-        <!-- Module status -->
-        <com.google.android.material.card.MaterialCardView
-            style="@style/PermCard"
-            app:cardBackgroundColor="@color/surface"
-            app:cardCornerRadius="14dp"
-            app:cardElevation="0dp">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:baselineAligned="false"
+            android:orientation="horizontal">
 
-            <LinearLayout style="@style/PermCardBody">
-
-                <TextView style="@style/PermTitle" android:text="@string/led_module_title" />
-
-                <TextView style="@style/PermDesc" android:text="@string/led_module_desc" />
-
-                <LinearLayout style="@style/PermRow">
-
-                    <TextView
-                        android:id="@+id/ledStatus"
-                        style="@style/PermStatus"
-                        tools:text="Работает (версия 2.0)" />
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/ledRemove"
-                        style="@style/Widget.MaterialComponents.Button.TextButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="40dp"
-                        android:layout_marginEnd="8dp"
-                        android:insetTop="0dp"
-                        android:insetBottom="0dp"
-                        android:text="@string/led_remove"
-                        android:textColor="@color/danger"
-                        android:textSize="12sp"
-                        app:cornerRadius="10dp" />
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/ledInstall"
-                        style="@style/PermButton"
-                        android:layout_width="220dp"
-                        tools:text="Установить" />
-                </LinearLayout>
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
-
-        <!-- Standby -->
-        <com.google.android.material.card.MaterialCardView
-            style="@style/PermCard"
-            android:layout_marginTop="10dp"
-            app:cardBackgroundColor="@color/surface"
-            app:cardCornerRadius="14dp"
-            app:cardElevation="0dp">
-
-            <LinearLayout style="@style/PermCardBody">
-
-                <TextView style="@style/PermTitle" android:text="@string/led_sleep_title" />
-
-                <com.google.android.material.button.MaterialButtonToggleGroup
-                    android:id="@+id/ledSleepGroup"
-                    style="@style/LedGroup"
-                    app:selectionRequired="true"
-                    app:singleSelection="true">
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/ledSleepOff"
-                        style="@style/LedModeButton"
-                        android:text="@string/led_mode_off" />
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/ledSleepOn"
-                        style="@style/LedModeButton"
-                        android:text="@string/led_mode_on" />
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/ledSleepBlink"
-                        style="@style/LedModeButton"
-                        android:text="@string/led_mode_blink" />
-                </com.google.android.material.button.MaterialButtonToggleGroup>
-
-                <LinearLayout
-                    android:id="@+id/ledSleepLevelRow"
-                    style="@style/PermRow">
-
-                    <TextView
-                        android:id="@+id/ledSleepLevel"
-                        style="@style/LedLevelText"
-                        tools:text="Яркость: 100 %" />
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/ledSleepMinus"
-                        style="@style/LedStepButton"
-                        android:text="−" />
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/ledSleepPlus"
-                        style="@style/LedStepButton"
-                        android:layout_marginStart="8dp"
-                        android:text="+" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/ledSleepSpeedRow"
-                    style="@style/PermRow">
-
-                    <TextView
-                        android:id="@+id/ledSleepSpeed"
-                        style="@style/LedLevelText"
-                        tools:text="Скорость: ×1" />
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/ledSleepSpeedMinus"
-                        style="@style/LedStepButton"
-                        android:text="−" />
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/ledSleepSpeedPlus"
-                        style="@style/LedStepButton"
-                        android:layout_marginStart="8dp"
-                        android:text="+" />
-                </LinearLayout>
+            <!-- Module status -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="12dp"
+                android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/ledSleepBlinkNote"
-                    style="@style/PermDesc"
-                    android:layout_marginTop="6dp"
-                    android:text="@string/led_sleep_blink_note" />
+                    style="@style/SectionLabel"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginBottom="8dp"
+                    android:text="@string/led_section_module" />
+
+                <com.google.android.material.card.MaterialCardView
+                    style="@style/PermCard"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                                    app:cardBackgroundColor="@color/surface"
+                    app:cardCornerRadius="28dp"
+                    app:cardElevation="0dp">
+
+                    <LinearLayout style="@style/PermCardBody">
+
+                        <TextView style="@style/PermTitle" android:text="@string/led_module_title" />
+
+                        <TextView style="@style/PermDesc" android:text="@string/led_module_desc" />
+
+                        <TextView
+                            android:id="@+id/ledStatus"
+                            style="@style/PermStatus"
+                            android:layout_width="match_parent"
+                            android:layout_marginTop="12dp"
+                            tools:text="Работает (версия 1.0)" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/ledInstall"
+                            style="@style/PermButton"
+                            android:layout_width="match_parent"
+                            android:layout_marginTop="12dp"
+                            tools:text="Установить" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/ledRemove"
+                            style="@style/TellyButtonDanger"
+                            android:layout_width="wrap_content"
+                            android:layout_height="48dp"
+                            android:layout_gravity="end"
+                            android:layout_marginTop="12dp"
+                            android:paddingStart="24dp"
+                            android:paddingEnd="24dp"
+                            android:text="@string/led_remove"
+                            android:textSize="15sp" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
             </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
 
-        <!-- While on ("Off" = the firmware's own state) -->
-        <com.google.android.material.card.MaterialCardView
-            style="@style/PermCard"
-            android:layout_marginTop="10dp"
-            app:cardBackgroundColor="@color/surface"
-            app:cardCornerRadius="14dp"
-            app:cardElevation="0dp">
-
-            <LinearLayout style="@style/PermCardBody">
-
-                <TextView style="@style/PermTitle" android:text="@string/led_on_title" />
-
-                <com.google.android.material.button.MaterialButtonToggleGroup
-                    android:id="@+id/ledOnGroup"
-                    style="@style/LedGroup"
-                    app:selectionRequired="true"
-                    app:singleSelection="true">
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/ledOnOff"
-                        style="@style/LedModeButton"
-                        android:text="@string/led_mode_off" />
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/ledOnOn"
-                        style="@style/LedModeButton"
-                        android:text="@string/led_mode_on" />
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/ledOnBlink"
-                        style="@style/LedModeButton"
-                        android:text="@string/led_mode_blink" />
-                </com.google.android.material.button.MaterialButtonToggleGroup>
-
-                <LinearLayout
-                    android:id="@+id/ledOnLevelRow"
-                    style="@style/PermRow">
-
-                    <TextView
-                        android:id="@+id/ledOnLevel"
-                        style="@style/LedLevelText"
-                        tools:text="Яркость: 30 %" />
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/ledOnMinus"
-                        style="@style/LedStepButton"
-                        android:text="−" />
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/ledOnPlus"
-                        style="@style/LedStepButton"
-                        android:layout_marginStart="8dp"
-                        android:text="+" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/ledOnSpeedRow"
-                    style="@style/PermRow">
-
-                    <TextView
-                        android:id="@+id/ledOnSpeed"
-                        style="@style/LedLevelText"
-                        tools:text="Скорость: ×1" />
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/ledOnSpeedMinus"
-                        style="@style/LedStepButton"
-                        android:text="−" />
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/ledOnSpeedPlus"
-                        style="@style/LedStepButton"
-                        android:layout_marginStart="8dp"
-                        android:text="+" />
-                </LinearLayout>
+            <!-- Standby -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="12dp"
+                android:orientation="vertical">
 
                 <TextView
-                    style="@style/PermDesc"
-                    android:layout_marginTop="6dp"
-                    android:text="@string/led_on_note" />
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
+                    style="@style/SectionLabel"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginBottom="8dp"
+                    android:text="@string/led_sleep_title" />
 
+                <com.google.android.material.card.MaterialCardView
+                    style="@style/PermCard"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                                    app:cardBackgroundColor="@color/surface"
+                    app:cardCornerRadius="28dp"
+                    app:cardElevation="0dp">
+
+                    <LinearLayout style="@style/PermCardBody">
+
+                        <com.google.android.material.button.MaterialButtonToggleGroup
+                            android:id="@+id/ledSleepGroup"
+                            style="@style/LedGroup"
+                            app:selectionRequired="true"
+                            app:singleSelection="true">
+
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/ledSleepOff"
+                                style="@style/LedModeButton"
+                                android:text="@string/led_mode_off" />
+
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/ledSleepOn"
+                                style="@style/LedModeButton"
+                                android:text="@string/led_mode_on" />
+                        </com.google.android.material.button.MaterialButtonToggleGroup>
+
+                        <LinearLayout
+                            android:id="@+id/ledSleepLevelRow"
+                            style="@style/PermRow">
+
+                            <TextView
+                                android:id="@+id/ledSleepLevel"
+                                style="@style/LedLevelText"
+                                tools:text="Яркость: 100 %" />
+
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/ledSleepMinus"
+                                style="@style/LedStepButton"
+                                android:text="−" />
+
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/ledSleepPlus"
+                                style="@style/LedStepButton"
+                                android:layout_marginStart="8dp"
+                                android:text="+" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
+
+            <!-- While on ("Off" = the firmware's own state) -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/SectionLabel"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginBottom="8dp"
+                    android:text="@string/led_on_title" />
+
+                <com.google.android.material.card.MaterialCardView
+                    style="@style/PermCard"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                                    app:cardBackgroundColor="@color/surface"
+                    app:cardCornerRadius="28dp"
+                    app:cardElevation="0dp">
+
+                    <LinearLayout style="@style/PermCardBody">
+
+                        <com.google.android.material.button.MaterialButtonToggleGroup
+                            android:id="@+id/ledOnGroup"
+                            style="@style/LedGroup"
+                            app:selectionRequired="true"
+                            app:singleSelection="true">
+
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/ledOnOff"
+                                style="@style/LedModeButton"
+                                android:text="@string/led_mode_off" />
+
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/ledOnOn"
+                                style="@style/LedModeButton"
+                                android:text="@string/led_mode_on" />
+                        </com.google.android.material.button.MaterialButtonToggleGroup>
+
+                        <LinearLayout
+                            android:id="@+id/ledOnLevelRow"
+                            style="@style/PermRow">
+
+                            <TextView
+                                android:id="@+id/ledOnLevel"
+                                style="@style/LedLevelText"
+                                tools:text="Яркость: 30 %" />
+
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/ledOnMinus"
+                                style="@style/LedStepButton"
+                                android:text="−" />
+
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/ledOnPlus"
+                                style="@style/LedStepButton"
+                                android:layout_marginStart="8dp"
+                                android:text="+" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
+        </LinearLayout>
     </LinearLayout>
 </ScrollView>

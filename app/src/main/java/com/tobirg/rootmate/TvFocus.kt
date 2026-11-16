@@ -18,7 +18,7 @@ object TvFocus {
     /** Which corners of the outline are rounded; the inner corners of a segmented switch's buttons are square. */
     enum class Corners { ALL, START, END, NONE }
 
-    fun apply(view: View, cornerDp: Float = 12f, corners: Corners = Corners.ALL, dimmed: () -> Boolean = { false }) {
+    fun apply(view: View, cornerDp: Float = 28f, corners: Corners = Corners.ALL, dimmed: () -> Boolean = { false }) {
         val density = view.resources.displayMetrics.density
         val r = cornerDp * density
         val ring = GradientDrawable().apply {

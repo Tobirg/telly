@@ -14,9 +14,9 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:paddingStart="24dp"
-        android:paddingTop="16dp"
+        android:paddingTop="8dp"
         android:paddingEnd="24dp"
-        android:paddingBottom="16dp"
+        android:paddingBottom="12dp"
         android:clipToPadding="false">
 
         <TextView
@@ -26,13 +26,13 @@
             android:layout_marginBottom="10dp"
             android:text="@string/perm_screen_title"
             android:textColor="@color/text_primary"
-            android:textSize="18sp" />
+            android:textSize="22sp" />
 
         <!-- All files access -->
         <com.google.android.material.card.MaterialCardView
             style="@style/PermCard"
             app:cardBackgroundColor="@color/surface"
-            app:cardCornerRadius="14dp"
+            app:cardCornerRadius="28dp"
             app:cardElevation="0dp">
 
             <LinearLayout style="@style/PermCardBody">
@@ -49,6 +49,8 @@
                         tools:text="Не разрешено" />
 
                     <com.google.android.material.button.MaterialButton
+        android:textAllCaps="false"
+        android:letterSpacing="0"
                         android:id="@+id/permStorageButton"
                         style="@style/PermButton"
                         tools:text="Выдать разрешение" />
@@ -61,7 +63,7 @@
             style="@style/PermCard"
             android:layout_marginTop="10dp"
             app:cardBackgroundColor="@color/surface"
-            app:cardCornerRadius="14dp"
+            app:cardCornerRadius="28dp"
             app:cardElevation="0dp">
 
             <LinearLayout style="@style/PermCardBody">
@@ -77,6 +79,8 @@
                         style="@style/PermStatus" />
 
                     <com.google.android.material.button.MaterialButton
+        android:textAllCaps="false"
+        android:letterSpacing="0"
                         android:id="@+id/permInstallButton"
                         style="@style/PermButton" />
                 </LinearLayout>
@@ -88,7 +92,7 @@
             style="@style/PermCard"
             android:layout_marginTop="10dp"
             app:cardBackgroundColor="@color/surface"
-            app:cardCornerRadius="14dp"
+            app:cardCornerRadius="28dp"
             app:cardElevation="0dp">
 
             <LinearLayout style="@style/PermCardBody">
@@ -104,6 +108,8 @@
                         style="@style/PermStatus" />
 
                     <com.google.android.material.button.MaterialButton
+        android:textAllCaps="false"
+        android:letterSpacing="0"
                         android:id="@+id/permAdbButton"
                         style="@style/PermButton" />
                 </LinearLayout>
@@ -118,18 +124,20 @@
             android:weightSum="3">
 
             <com.google.android.material.button.MaterialButton
+        android:textAllCaps="false"
+        android:letterSpacing="0"
                 android:id="@+id/permDone"
-                style="@style/Widget.MaterialComponents.Button"
+                style="@style/TellyButtonPrimary"
                 android:layout_width="0dp"
-                android:layout_height="44dp"
-                android:layout_marginTop="14dp"
+                android:layout_height="56dp"
+                android:layout_marginTop="10dp"
                 android:layout_weight="2"
                 android:focusedByDefault="true"
                 android:insetTop="0dp"
                 android:insetBottom="0dp"
                 android:text="@string/perm_done_button"
-                android:textSize="13sp"
-                app:cornerRadius="12dp" />
+                android:textSize="17sp"
+                app:cornerRadius="28dp" />
         </LinearLayout>
 
     </LinearLayout>

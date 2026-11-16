@@ -7,7 +7,7 @@ import android.os.Bundle
 import org.json.JSONObject
 
 /**
- * RootMate driven over adb by a program (an AI agent or a script) instead of the remote:
+ * Telly driven over adb by a program (an AI agent or a script) instead of the remote:
  *
  *   adb shell am broadcast -n com.tobirg.rootmate/.AgentReceiver -a com.tobirg.rootmate.AGENT --es cmd status
  *
@@ -42,7 +42,7 @@ class AgentReceiver : BroadcastReceiver() {
         Thread {
             val result = try {
                 Agent.host?.handle(cmd, args) ?: Agent.error(
-                    "RootMate is not open: adb shell am start -n com.tobirg.rootmate/.MainActivity"
+                    "Telly is not open: adb shell am start -n com.tobirg.rootmate/.MainActivity"
                 )
             } catch (e: Throwable) {
                 Agent.error(e.message ?: e.javaClass.simpleName)

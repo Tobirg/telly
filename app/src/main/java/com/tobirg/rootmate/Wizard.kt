@@ -4,7 +4,7 @@ import android.content.Context
 import java.io.File
 
 /**
- * The step-by-step flow, recognised from what is on the USB drive. Everything RootMate and the MBOOT scripts
+ * The step-by-step flow, recognised from what is on the USB drive. Everything Telly and the MBOOT scripts
  * make lives in the root of the drive (MBOOT can only write there, names up to 12 characters); the state is the
  * set of files, so it survives the data wipe that the flash step ends with.
  *

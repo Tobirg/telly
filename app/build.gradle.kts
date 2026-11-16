@@ -51,7 +51,7 @@ android {
         val variant = this
         outputs.all {
             (this as com.android.build.gradle.internal.api.BaseVariantOutputImpl).outputFileName =
-                "RootMate-${variant.versionName}.apk"
+                "Telly-${variant.versionName}.apk"
         }
     }
 

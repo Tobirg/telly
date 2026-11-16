@@ -1,10 +1,11 @@
 <resources>
-    <string name="app_name">RootMate</string>
+    <string name="app_name">Telly</string>
 
     <string name="uart_hint">Turns UART on</string>
     <string name="enable_uart">Open the engineering menu</string>
 
     <string name="section_prepare">Setup</string>
+    <string name="install_magisk_short">Install</string>
     <string name="install_magisk">Download and install Magisk</string>
 
     <string name="full_patch">Select\nBOOT_*.IMG</string>
@@ -28,7 +29,6 @@
     <string name="perm_manage_button">Open settings</string>
     <string name="perm_done_button">Done</string>
 
-    <string name="uninstall_app">Uninstall RootMate</string>
     <string name="busy_exit_title">Patching in progress</string>
     <string name="busy_exit_message">If you leave now, the operation may be interrupted and the file left incomplete. Leave?</string>
     <string name="busy_exit_stay">Stay</string>
@@ -47,8 +47,6 @@
     <string name="status_magisk_no_boot">Magisk %1$s is installed, but magiskboot was not found</string>
     <string name="status_magisk_ok">Magisk installed: %1$s</string>
     <string name="msg_need_magisk">Magisk is not installed (or magiskboot was not found). First press “Download and install Magisk”.</string>
-    <string name="uninstall_no_dialog">The system uninstall dialog was not found, opening the app settings.</string>
-    <string name="uninstall_failed">ERROR: could not open the app uninstall screen (%1$s).</string>
     <string name="factory_opening">Opening the engineering menu (page %1$d).</string>
     <string name="factory_not_found">ERROR: com.homwee.factory/.FactoryActivity was not found on this device/firmware.</string>
     <string name="factory_denied">ERROR: no permission to start the engineering menu from a regular app (%1$s). Use adb shell am start ...</string>
@@ -173,7 +171,7 @@
     <string name="dlg_mboot_step_restart">Press \"Reboot the TV\": the app reboots the TV through adb (the first time the TV asks whether to allow debugging: choose \"Always allow\"). Or unplug the TV and plug it in again.</string>
     <string name="dlg_mboot_step_commands">Keep holding Enter until the MBOOT prompt appears, then type the commands:</string>
     <string name="dlg_mboot_order">First check.txt (checks only, writes nothing, ends with CHECK_OK), only then flash.txt.</string>
-    <string name="dlg_mboot_fat">If check.txt stopped at step 3 with \"Invalid FAT entry\", MBOOT cannot read the file from the drive: copy the RootMate files (images, *.CRC, *.txt) to a PC, format the drive as FAT32 and repeat. Do not delete files MBOOT wrote from the drive.</string>
+    <string name="dlg_mboot_fat">If check.txt stopped at step 3 with \"Invalid FAT entry\", MBOOT cannot read the file from the drive: copy the Telly files (images, *.CRC, *.txt) to a PC, format the drive as FAT32 and repeat. Do not delete files MBOOT wrote from the drive.</string>
     <string name="stage_no_permission">No access to files: grant \"All files access\".</string>
     <string name="stage_drive_missing">The chosen drive %1$s is not plugged in. Put it into the TV.</string>
     <string name="stage_drive_other">The chosen drive %1$s is not plugged in, another one is: %2$s.</string>
@@ -202,17 +200,18 @@
     <string name="perm_adb_no_port">adb does not listen on port 5555</string>
     <string name="perm_adb_open_about">Open \"About\"</string>
     <string name="perm_adb_open_dev">Open \"Developer options\"</string>
-    <string name="perm_adb_hint_dev">Press \"Build\" 7 times until \"You are now a developer\", then come back to RootMate.</string>
-    <string name="perm_adb_hint_usb">Turn on \"USB debugging\" (the \"Debugging\" section), then come back to RootMate.</string>
+    <string name="perm_adb_hint_dev">Press \"Build\" 7 times until \"You are now a developer\", then come back to Telly.</string>
+    <string name="perm_adb_hint_usb">Turn on \"USB debugging\" (the \"Debugging\" section), then come back to Telly.</string>
     <string name="agent_cmd_log">Command over adb: %1$s</string>
     <!-- Power LED screen (LedActivity, ledctl kernel module) -->
-    <string name="led_button">Power LED</string>
-    <string name="led_title">Power LED</string>
+    <string name="led_open">Configure</string>
+    <string name="led_section_module">Module</string>
+    <string name="led_title">Tuvio power LED</string>
     <string name="led_module_title">Tuvio power LED control</string>
     <string name="led_module_desc">Power LED of Tuvio TO48/55/65UFGCV5 TVs, without changing the boot image. Needs root (Magisk).</string>
     <string name="led_status_checking">Checking…</string>
     <string name="led_status_installing">Installing…</string>
-    <string name="led_status_no_root">No root access: allow RootMate in Magisk</string>
+    <string name="led_status_no_root">No root access: allow Telly in Magisk</string>
     <string name="led_status_not_installed">Not installed</string>
     <string name="led_status_ok">Running (version %1$s)</string>
     <string name="led_status_update">A different module build is installed (%1$s)</string>
@@ -227,12 +226,14 @@
     <string name="led_cancel">Cancel</string>
     <string name="led_sleep_title">In standby</string>
     <string name="led_on_title">While on</string>
-    <string name="led_mode_off">Off</string>
-    <string name="led_mode_on">On</string>
-    <string name="led_mode_blink">Blink</string>
+    <string name="led_mode_off">OFF</string>
+    <string name="led_mode_on">ON</string>
     <string name="led_level">Brightness: %1$d %%</string>
-    <string name="led_speed">Speed: ×%1$s</string>
-    <string name="led_sleep_blink_note">In standby the LED blinks at full brightness: while the CPU sleeps the PWM blinks on its own, and it cannot be dim and blink at the same time.</string>
-    <string name="led_on_note">\"Off\" is the firmware\'s own state. After the screen turns on, the firmware shows its own LED state for a fraction of a second, then the module restores the chosen one.</string>
     <string name="led_set_failed">Could not apply the setting</string>
+    <string name="tab_root">root</string>
+    <string name="tab_addons">Add-ons</string>
+    <string name="addon_led_desc">Logo glow settings for Tuvio. Kernel module.</string>
+    <string name="led_need_root">Root required: install Magisk and allow Telly in it</string>
+    <string name="led_unsupported">The module is not supported on this TV</string>
+    <string name="exit_press_back_again">Press Back again to exit</string>
 </resources>

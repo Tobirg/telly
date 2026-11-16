@@ -40,7 +40,7 @@
 //   pwm         debug: write "period duty div polarity" (hex or dec) to program the PWM right now
 //   info        read-only: what was found, current values, or why the module refused
 //   probe_only  1 at insmod: run every check, write nothing, print "probe ok" and fail with ECANCELED
-//               (insmod: "Operation canceled") - how RootMate tells a supported TV without changing it
+//               (insmod: "Operation canceled") - how Telly tells a supported TV without changing it
 // rmmod restores everything the driver had when the module was loaded.
 #include <linux/module.h>
 #include <linux/kernel.h>

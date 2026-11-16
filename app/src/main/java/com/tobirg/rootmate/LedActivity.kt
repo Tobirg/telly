@@ -1,6 +1,7 @@
 package com.tobirg.rootmate
 
 import android.os.Bundle
+import android.os.SystemClock
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
@@ -8,12 +9,11 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.button.MaterialButtonToggleGroup
-import java.text.NumberFormat
 import java.util.concurrent.Executors
 
 /**
  * Power LED settings on top of the ledctl kernel module (Led.kt): install/update/remove the module, the LED mode in
- * standby and while on, brightness and blink speed. Every change is applied at once and kept for the next boots, so
+ * standby and while on, and brightness. Every change is applied at once and kept for the next boots, so
  * there is no "Done" button (Back closes the screen). Root work runs on one background thread, in order.
  */
 class LedActivity : AppCompatActivity() {
@@ -27,11 +27,9 @@ class LedActivity : AppCompatActivity() {
     private lateinit var onGroup: MaterialButtonToggleGroup
 
     /** button id -> module value. While on, "Off" is the firmware's own state (on_led -1, the firmware keeps it dark). */
-    private val sleepModes = mapOf(R.id.ledSleepOff to 0, R.id.ledSleepOn to 1, R.id.ledSleepBlink to 2)
-    private val onModes = mapOf(R.id.ledOnOff to -1, R.id.ledOnOn to 1, R.id.ledOnBlink to 2)
-    private val levels = listOf(5, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100)
-    /** blink rate in % of the stock rate (100 = about one blink per second) */
-    private val speeds = listOf(75, 100, 150, 200, 300, 400)
+    private val sleepModes = mapOf(R.id.ledSleepOff to 0, R.id.ledSleepOn to 1)
+    private val onModes = mapOf(R.id.ledOnOff to -1, R.id.ledOnOn to 1)
+    private val levels = (1..20).map { it * 5 }
 
     private var state: Led.State? = null
     private val values = Led.DEFAULTS.toMutableMap()
@@ -40,8 +38,7 @@ class LedActivity : AppCompatActivity() {
     private var updating = false
 
     private val stepperIds = listOf(
-        R.id.ledSleepMinus, R.id.ledSleepPlus, R.id.ledSleepSpeedMinus, R.id.ledSleepSpeedPlus,
-        R.id.ledOnMinus, R.id.ledOnPlus, R.id.ledOnSpeedMinus, R.id.ledOnSpeedPlus,
+        R.id.ledSleepMinus, R.id.ledSleepPlus, R.id.ledOnMinus, R.id.ledOnPlus,
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -60,20 +57,22 @@ class LedActivity : AppCompatActivity() {
         bindGroup(sleepGroup, sleepModes, "sleep_led")
         bindGroup(onGroup, onModes, "on_led")
         bindStepper(R.id.ledSleepMinus, R.id.ledSleepPlus, "sleep_level", levels)
-        bindStepper(R.id.ledSleepSpeedMinus, R.id.ledSleepSpeedPlus, "sleep_speed", speeds)
         bindStepper(R.id.ledOnMinus, R.id.ledOnPlus, "on_level", levels)
-        bindStepper(R.id.ledOnSpeedMinus, R.id.ledOnSpeedPlus, "on_speed", speeds)
 
-        (listOf(R.id.ledInstall, R.id.ledRemove) + stepperIds).forEach { TvFocus.apply(findViewById(it), 10f) }
-        focusSegments(listOf(R.id.ledSleepOff, R.id.ledSleepOn, R.id.ledSleepBlink))
-        focusSegments(listOf(R.id.ledOnOff, R.id.ledOnOn, R.id.ledOnBlink))
+        (listOf(R.id.ledInstall, R.id.ledRemove) + stepperIds).forEach { TvFocus.apply(findViewById(it)) }
+        focusSegments(listOf(R.id.ledSleepOff, R.id.ledSleepOn))
+        focusSegments(listOf(R.id.ledOnOff, R.id.ledOnOn))
 
         setControlsEnabled(false)
     }
 
+    private var lastRefresh = 0L
+
     override fun onResume() {
         super.onResume()
-        refresh()
+        // the TV may flip the home screen in and out after wake; refreshing on every resume made the status flicker
+        val now = SystemClock.elapsedRealtime()
+        if (state == null || now - lastRefresh > 5000) refresh()
     }
 
     override fun onDestroy() {
@@ -125,8 +124,11 @@ class LedActivity : AppCompatActivity() {
     }
 
     private fun refresh() {
-        status.setText(R.string.led_status_checking)
-        status.setTextColor(getColor(R.color.text_secondary))
+        lastRefresh = SystemClock.elapsedRealtime()
+        if (state == null) {
+            status.setText(R.string.led_status_checking)
+            status.setTextColor(getColor(R.color.text_secondary))
+        }
         worker.execute {
             val s = Led.read(this)
             runOnUiThread { if (!isDestroyed) show(s) }
@@ -157,6 +159,8 @@ class LedActivity : AppCompatActivity() {
         removeBtn.visibility = if (s.root && s.installed) View.VISIBLE else View.GONE
 
         values.putAll(s.values)
+        // blink (2) was removed: an older saved value becomes "On"
+        for (k in listOf("sleep_led", "on_led")) if (values[k] == 2) { values[k] = 1; apply(k, 1) }
         // MaterialButton ignores setChecked while disabled: enable first, select, then apply the real state
         setControlsEnabled(true)
         updating = true
@@ -169,28 +173,12 @@ class LedActivity : AppCompatActivity() {
         setControlsEnabled(s.root && s.installed && s.loaded)
     }
 
-    /**
-     * Brightness for "On" in both sections and for "Blink" while on (software blink); speed for "Blink" in both.
-     * Blinking in standby is done by the PWM alone while the CPU sleeps, so it is always full brightness (note).
-     */
     private fun showRows() {
-        val sleep = values.getValue("sleep_led")
-        val on = values.getValue("on_led")
         text(R.id.ledSleepLevel, getString(R.string.led_level, values.getValue("sleep_level")))
         text(R.id.ledOnLevel, getString(R.string.led_level, values.getValue("on_level")))
-        text(R.id.ledSleepSpeed, getString(R.string.led_speed, speedText(values.getValue("sleep_speed"))))
-        text(R.id.ledOnSpeed, getString(R.string.led_speed, speedText(values.getValue("on_speed"))))
-        visible(R.id.ledSleepLevelRow, sleep == 1)
-        visible(R.id.ledSleepSpeedRow, sleep == 2)
-        visible(R.id.ledSleepBlinkNote, sleep == 2)
-        visible(R.id.ledOnLevelRow, on == 1 || on == 2)
-        visible(R.id.ledOnSpeedRow, on == 2)
+        visible(R.id.ledSleepLevelRow, values.getValue("sleep_led") == 1)
+        visible(R.id.ledOnLevelRow, values.getValue("on_led") == 1)
     }
-
-    /** 150 -> "1,5" (ru) / "1.5" (en): the rate relative to the stock blink */
-    private fun speedText(percent: Int): String =
-        NumberFormat.getNumberInstance(resources.configuration.locales[0]).apply { maximumFractionDigits = 2 }
-            .format(percent / 100.0)
 
     private fun text(id: Int, value: String) { findViewById<TextView>(id).text = value }
 

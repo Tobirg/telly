@@ -1,4 +1,4 @@
-# RootMate: flash patched boot into slot {{SLOT}}  ({{WHEN}})
+# Telly: flash patched boot into slot {{SLOT}}  ({{WHEN}})
 # Run in MBOOT console:  usb start 1  then  udstar flash.txt   (check.txt = same checks, writes nothing)
 # Any failed command stops the script. Lines marked @W write to the eMMC, @D exist only in the dry run.
 # original (backup): {{ORIG}}  crc32 {{CRC_ORIG}}

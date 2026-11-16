@@ -47,10 +47,9 @@ object Led {
         return "probe|${u?.release}|${u?.version}|${bundledSums(context)["ledctl.ko"]}"
     }
 
-    val KEYS = listOf("sleep_led", "sleep_level", "sleep_speed", "on_led", "on_level", "on_speed")
+    val KEYS = listOf("sleep_led", "sleep_level", "on_led", "on_level")
     val DEFAULTS = mapOf(
-        "sleep_led" to 0, "sleep_level" to 100, "sleep_speed" to 100,
-        "on_led" to -1, "on_level" to 100, "on_speed" to 100,
+        "sleep_led" to 0, "sleep_level" to 100, "on_led" to -1, "on_level" to 100,
     )
 
     data class State(

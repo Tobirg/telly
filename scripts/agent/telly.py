@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
-"""Sends one command to RootMate over adb and prints its JSON answer.
+"""Sends one command to Telly over adb and prints its JSON answer.
 
-    python rootmate.py [-s SERIAL] status
-    python rootmate.py next
-    python rootmate.py choose --id 02EF-1D00
-    python rootmate.py patch --path /storage/02EF-1D00/original_boot/BOOT_A.IMG
-    python rootmate.py fix --path /storage/.../magisk_patched-....img
-    python rootmate.py log --lines 60
-    python rootmate.py open            # start RootMate (it must be open to take commands)
-    python rootmate.py wait            # poll status until busy is false, print the last status
+    python telly.py [-s SERIAL] status
+    python telly.py next
+    python telly.py choose --id 02EF-1D00
+    python telly.py patch --path /storage/02EF-1D00/original_boot/BOOT_A.IMG
+    python telly.py fix --path /storage/.../magisk_patched-....img
+    python telly.py log --lines 60
+    python telly.py open            # start Telly (it must be open to take commands)
+    python telly.py wait            # poll status until busy is false, print the last status
 
 Exit code: 0 when the answer has "ok": true, 1 on an error answer, 2 when adb or the answer itself failed.
 Needs only adb in PATH (or ADB=/path/to/adb). See docs/agent.md.
@@ -52,7 +52,7 @@ def send(serial, cmd, extras):
     out = r.stdout + r.stderr
     m = re.search(r'result=(-?\d+), data="(.*)"\s*$', out, re.S)
     if not m:
-        raise RuntimeError('no answer from RootMate:\n' + out.strip())
+        raise RuntimeError('no answer from Telly:\n' + out.strip())
     return json.loads(m.group(2))
 
 

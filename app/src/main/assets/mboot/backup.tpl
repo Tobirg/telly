@@ -1,4 +1,4 @@
-# RootMate: backup of the boot partitions and misc to the USB drive ({{WHEN}})
+# Telly: backup of the boot partitions and misc to the USB drive ({{WHEN}})
 # Run in the MBOOT console:  usb start 1   then   udstar backup.txt   (the TV reboots when it is done)
 # It WRITES NOTHING TO THE eMMC: partitions are only read and saved as files on the drive.
 # Every file is read back from the drive and compared with the eMMC, any mismatch stops the script.

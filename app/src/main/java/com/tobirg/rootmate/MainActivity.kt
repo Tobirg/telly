@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.ComponentName
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.provider.Settings
@@ -34,7 +33,7 @@ import java.util.zip.ZipFile
  * over MANAGE_EXTERNAL_STORAGE) instead of the system SAF picker, since on
  * this firmware that picker is effectively provided by a third-party app
  * (Fluffy) rather than the OS - this removes that dependency entirely for
- * everything RootMate itself does. The patched result is always written
+ * everything Telly itself does. The patched result is always written
  * right next to the input file, so there's only one thing to pick.
  */
 class MainActivity : AppCompatActivity() {
@@ -75,7 +74,7 @@ class MainActivity : AppCompatActivity() {
 
     private val allButtonIds = listOf(
         R.id.btnUartMenu, R.id.btnInstallMagisk, R.id.btnFullPatch, R.id.btnPickInput,
-        R.id.btnUninstall, R.id.btnLed, R.id.btnNextStep, R.id.btnChangeDrive, R.id.btnModeAuto, R.id.btnModeManual
+        R.id.btnNextStep, R.id.btnChangeDrive, R.id.btnModeAuto, R.id.btnModeManual
     )
 
     /** Must be called on the UI thread. Locks the UI and runs [block] on a worker thread. */
@@ -129,7 +128,7 @@ class MainActivity : AppCompatActivity() {
             if (!agentMode) window.clearFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
             progressPanel.visibility = View.GONE
             lastProgress = ""
-            defaultFocusView.requestFocus()
+            focusPage()
         }
     }
 
@@ -175,16 +174,11 @@ class MainActivity : AppCompatActivity() {
         }
         onBackPressedDispatcher.addCallback(this, object : androidx.activity.OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                if (!busy) {
-                    finish()
+                if (addonsPage.visibility == View.VISIBLE) {
+                    showPage(false)
                     return
                 }
-                AlertDialog.Builder(this@MainActivity)
-                    .setTitle(R.string.busy_exit_title)
-                    .setMessage(R.string.busy_exit_message)
-                    .setPositiveButton(R.string.busy_exit_stay, null)
-                    .setNegativeButton(R.string.busy_exit_leave) { _, _ -> finish() }
-                    .show()
+                exitApp()
             }
         })
         findViewById<Button>(R.id.btnUartMenu).setOnClickListener { openUartMenu() }
@@ -197,9 +191,15 @@ class MainActivity : AppCompatActivity() {
         findViewById<Button>(R.id.btnPickInput).setOnClickListener {
             withMagisk { withStoragePermission { launchPicker("manual") } }
         }
-        findViewById<Button>(R.id.btnUninstall).setOnClickListener { uninstallSelf() }
         findViewById<Button>(R.id.btnLed).setOnClickListener { startActivity(Intent(this, LedActivity::class.java)) }
-        showLedButton(false)  // until the module probe says this TV can run it (updateLedButton)
+        setLed(false, R.string.led_need_root)  // until the module probe says this TV can run it (updateLedButton)
+        addonsPage = findViewById(R.id.addonsPage)
+        // plain buttons, not a toggle group: a group squares the inner corners of the rail items
+        findViewById<View>(R.id.tabRoot).setOnClickListener { showPage(false) }
+        findViewById<View>(R.id.tabAddons).setOnClickListener { showPage(true) }
+        TvFocus.apply(findViewById(R.id.tabRoot))
+        TvFocus.apply(findViewById(R.id.tabAddons))
+        TvFocus.apply(findViewById(R.id.btnLed))
 
         val gatedByStorage = listOf(R.id.btnFullPatch, R.id.btnPickInput)
         allButtonIds.forEach { id ->
@@ -234,7 +234,22 @@ class MainActivity : AppCompatActivity() {
         outState.putString(KEY_MODE, mode.name)
     }
 
-    /** Shows the block of the selected mode; the preparation block and the uninstall button are always visible. */
+    /** Shows one page (root / add-ons) and puts focus on it, so focus never stays on a hidden page. */
+    private fun showPage(addons: Boolean) {
+        findViewById<com.google.android.material.button.MaterialButton>(R.id.tabRoot).isChecked = !addons
+        findViewById<com.google.android.material.button.MaterialButton>(R.id.tabAddons).isChecked = addons
+        findViewById<android.widget.TextView>(R.id.pageTitle)?.setText(if (addons) R.string.tab_addons else R.string.tab_root)
+        addonsPage.visibility = if (addons) View.VISIBLE else View.GONE
+        findViewById<View>(R.id.rootPage).visibility = if (addons) View.GONE else View.VISIBLE
+        focusPage()
+    }
+
+    private fun focusPage() {
+        if (!::addonsPage.isInitialized) return
+        (if (addonsPage.visibility == View.VISIBLE) findViewById<View>(R.id.btnLed) else defaultFocusView).requestFocus()
+    }
+
+    /** Shows the block of the selected mode; the preparation block is always visible. */
     private fun applyMode() {
         findViewById<View>(R.id.modeAutoPanel).visibility = if (mode == Mode.AUTO) View.VISIBLE else View.GONE
         findViewById<View>(R.id.modeManualPanel).visibility = if (mode == Mode.MANUAL) View.VISIBLE else View.GONE
@@ -297,7 +312,9 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        defaultFocusView.post { defaultFocusView.requestFocus() }
+        // after minimizing, the visible page must match the selected tab and own the focus
+        showPage(addonsPage.visibility == View.VISIBLE)
+        defaultFocusView.post { focusPage() }
         updateGatedButtons()
         updateSlotStatus()
         refreshStage(true)
@@ -332,10 +349,10 @@ class MainActivity : AppCompatActivity() {
         val prefs = getSharedPreferences(PREFS_LED, MODE_PRIVATE)
         val key = Led.probeCacheKey(this)
         when (prefs.getString(key, null)) {
-            LED_YES -> return showLedButton(true)
-            LED_NO -> return showLedButton(false)
+            LED_YES -> return setLed(true)
+            LED_NO -> return setLed(false, R.string.led_unsupported)
         }
-        showLedButton(false)
+        setLed(false, R.string.led_need_root)
         if (ledProbeRunning || ledProbeTried || !isMagiskInstalled()) return
         ledProbeRunning = true
         Thread {
@@ -346,20 +363,40 @@ class MainActivity : AppCompatActivity() {
                 if (r != Led.Probe.NO_ROOT) {
                     prefs.edit().putString(key, if (r == Led.Probe.SUPPORTED) LED_YES else LED_NO).apply()
                 }
-                showLedButton(r == Led.Probe.SUPPORTED)
+                setLed(r == Led.Probe.SUPPORTED, if (r == Led.Probe.UNSUPPORTED) R.string.led_unsupported else R.string.led_need_root)
             }
         }.start()
     }
 
-    /** Without the LED button the uninstall button gets its old 2/3-width row back. */
-    private fun showLedButton(show: Boolean) {
-        findViewById<View>(R.id.btnLed).visibility = if (show) View.VISIBLE else View.GONE
-        val uninstall = findViewById<View>(R.id.btnUninstall)
-        (uninstall.parent as? android.widget.LinearLayout)?.weightSum = if (show) 2f else 3f
-        (uninstall.layoutParams as? android.widget.LinearLayout.LayoutParams)?.let {
-            it.weight = if (show) 1f else 2f
-            uninstall.layoutParams = it
+    /** The LED button stays visible: inactive, with the reason under it, until the module can run. */
+    private fun setLed(enabled: Boolean, reason: Int = 0) {
+        findViewById<View>(R.id.btnLed).isEnabled = enabled
+        findViewById<android.widget.TextView>(R.id.ledCaption).apply {
+            if (enabled) visibility = View.GONE else { setText(reason); visibility = View.VISIBLE }
         }
+    }
+
+    private lateinit var addonsPage: View
+
+    /** Time of the last Back press that only asked for confirmation (double Back exits). */
+    private var lastBackPress = 0L
+
+    /** Back on the first page leaves the app, as usual on TV (a running operation asks first). */
+    private fun exitApp() {
+        if (!busy) {
+            // First Back asks, a second Back within 2 s exits (as in most apps).
+            val now = System.currentTimeMillis()
+            if (now - lastBackPress < 2000) return finish()
+            lastBackPress = now
+            Toast.makeText(this, R.string.exit_press_back_again, Toast.LENGTH_SHORT).show()
+            return
+        }
+        AlertDialog.Builder(this)
+            .setTitle(R.string.busy_exit_title)
+            .setMessage(R.string.busy_exit_message)
+            .setPositiveButton(R.string.busy_exit_stay, null)
+            .setNegativeButton(R.string.busy_exit_leave) { _, _ -> finish() }
+            .show()
     }
 
     private fun magiskInfo() = try {
@@ -473,29 +510,6 @@ class MainActivity : AppCompatActivity() {
         val intent = Intent(this, FilePickerActivity::class.java)
             .putExtra(FilePickerActivity.EXTRA_START_DIR, Environment.getExternalStorageDirectory().absolutePath)
         filePicker.launch(intent)
-    }
-
-    /**
-     * ACTION_DELETE is normally handled by the system package installer's
-     * own confirmation UI, but this TV firmware's launcher may not resolve
-     * it; fall back to the app-details settings screen (which always has
-     * an "Uninstall" button) instead of silently doing nothing.
-     */
-    private fun uninstallSelf() {
-        val uri = Uri.parse("package:$packageName")
-        try {
-            startActivity(Intent(Intent.ACTION_DELETE, uri).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
-        } catch (e: ActivityNotFoundException) {
-            appendLog(getString(R.string.uninstall_no_dialog))
-            try {
-                startActivity(
-                    Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, uri)
-                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                )
-            } catch (e2: Exception) {
-                appendLog(getString(R.string.uninstall_failed, e2.message))
-            }
-        }
     }
 
     /**
@@ -978,7 +992,7 @@ class MainActivity : AppCompatActivity() {
     private fun fetchLatestApkUrl(repo: String): Triple<String, String, String> {
         val conn = URL("https://github.com/$repo/releases/latest").openConnection() as HttpURLConnection
         conn.instanceFollowRedirects = false
-        conn.setRequestProperty("User-Agent", "RootMate")
+        conn.setRequestProperty("User-Agent", "Telly")
         conn.connectTimeout = 15000
         conn.readTimeout = 15000
         val location = conn.getHeaderField("Location")
@@ -990,7 +1004,7 @@ class MainActivity : AppCompatActivity() {
         try {
             val html = URL("https://github.com/$repo/releases/expanded_assets/$tag").openConnection()
                 .apply {
-                    setRequestProperty("User-Agent", "RootMate")
+                    setRequestProperty("User-Agent", "Telly")
                     connectTimeout = 15000
                     readTimeout = 15000
                 }
@@ -1011,7 +1025,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun downloadFile(urlStr: String, dest: File) {
         val conn = URL(urlStr).openConnection() as HttpURLConnection
-        conn.setRequestProperty("User-Agent", "RootMate")
+        conn.setRequestProperty("User-Agent", "Telly")
         conn.instanceFollowRedirects = true
         conn.connectTimeout = 15000
         conn.readTimeout = 30000

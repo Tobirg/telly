@@ -48,9 +48,10 @@ class FilePickerActivity : Activity() {
         }
 
         pathLabel = TextView(this).apply {
-            setTextColor(Color.WHITE)
-            setPadding(32, 32, 32, 16)
-            textSize = 13f
+            setTextColor(getColor(R.color.paper))
+            setPadding(32, 24, 32, 12)
+            textSize = 20f
+            typeface = android.graphics.Typeface.create("sans-serif-medium", android.graphics.Typeface.NORMAL)
         }
         root.addView(pathLabel)
 
@@ -62,8 +63,8 @@ class FilePickerActivity : Activity() {
             descendantFocusability = ViewGroup.FOCUS_AFTER_DESCENDANTS
             choiceMode = AbsListView.CHOICE_MODE_SINGLE
             selector = StateListDrawable().apply {
-                addState(intArrayOf(android.R.attr.state_focused), ColorDrawable(Color.parseColor("#2E7D32")))
-                addState(intArrayOf(android.R.attr.state_pressed), ColorDrawable(Color.parseColor("#2E7D32")))
+                addState(intArrayOf(android.R.attr.state_focused), ColorDrawable(getColor(R.color.outline)))
+                addState(intArrayOf(android.R.attr.state_pressed), ColorDrawable(getColor(R.color.outline)))
                 addState(intArrayOf(), ColorDrawable(Color.TRANSPARENT))
             }
         }
@@ -179,7 +180,7 @@ class FilePickerActivity : Activity() {
         val adapter = object : ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, rows) {
             override fun getView(position: Int, convertView: android.view.View?, parent: ViewGroup): android.view.View {
                 val view = super.getView(position, convertView, parent) as TextView
-                view.setTextColor(Color.WHITE)
+                view.setTextColor(getColor(R.color.paper))
                 view.background = null
                 view.isFocusable = false
                 view.isFocusableInTouchMode = false

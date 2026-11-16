@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Narrow side navigation (TV pattern): icon over label, centred like Magisk; Back leaves the app. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="92dp"
+    android:layout_height="match_parent"
+    android:layout_marginEnd="8dp"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
+
+    <ImageView
+        android:layout_width="48dp"
+        android:layout_height="6dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="20dp"
+        android:importantForAccessibility="no"
+        android:scaleType="fitXY"
+        android:src="@drawable/bars" />
+
+    <LinearLayout
+        android:id="@+id/tabGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/tabRoot"
+            android:checkable="true"
+            android:checked="true"
+            style="@style/RailItem"
+            android:text="@string/tab_root"
+            app:icon="@drawable/ic_root" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/tabAddons"
+            android:checkable="true"
+            style="@style/RailItem"
+            android:text="@string/tab_addons"
+            app:icon="@drawable/ic_addons" />
+    </LinearLayout>
+</LinearLayout>

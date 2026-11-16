@@ -10,7 +10,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 
 /**
- * Explains why RootMate needs MANAGE_EXTERNAL_STORAGE and
+ * Explains why Telly needs MANAGE_EXTERNAL_STORAGE and
  * REQUEST_INSTALL_PACKAGES and lets the user jump to the matching system
  * settings screen for each one. MainActivity opens this automatically the
  * first time either permission is missing, and again whenever a gated
@@ -41,9 +41,9 @@ class PermissionsActivity : AppCompatActivity() {
         installButton.setOnClickListener { openInstallSettings() }
         adbButton.setOnClickListener { openAdbSettings() }
         findViewById<Button>(R.id.permDone).setOnClickListener { finish() }
-        TvFocus.apply(storageButton, 10f)
-        TvFocus.apply(installButton, 10f)
-        TvFocus.apply(adbButton, 10f)
+        TvFocus.apply(storageButton)
+        TvFocus.apply(installButton)
+        TvFocus.apply(adbButton)
         TvFocus.apply(findViewById(R.id.permDone))
     }
 

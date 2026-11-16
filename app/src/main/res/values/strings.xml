@@ -1,10 +1,11 @@
 <resources>
-    <string name="app_name">RootMate</string>
+    <string name="app_name">Telly</string>
 
     <string name="uart_hint">Включение UART</string>
     <string name="enable_uart">Открыть инженерное меню</string>
 
     <string name="section_prepare">Подготовка</string>
+    <string name="install_magisk_short">Установить</string>
     <string name="install_magisk">Скачать и установить Magisk</string>
 
     <string name="full_patch">Выбрать\nBOOT_*.IMG</string>
@@ -28,7 +29,6 @@
     <string name="perm_manage_button">Открыть настройки</string>
     <string name="perm_done_button">Готово</string>
 
-    <string name="uninstall_app">Удалить RootMate</string>
     <string name="busy_exit_title">Идёт патчинг</string>
     <string name="busy_exit_message">Если выйти сейчас, операция может прерваться, а файл остаться неполным. Выйти?</string>
     <string name="busy_exit_stay">Остаться</string>
@@ -47,8 +47,6 @@
     <string name="status_magisk_no_boot">Magisk %1$s установлен, но magiskboot не найден</string>
     <string name="status_magisk_ok">Magisk установлен: %1$s</string>
     <string name="msg_need_magisk">Magisk не установлен (или не найден magiskboot). Сначала нажмите «Скачать и установить Magisk».</string>
-    <string name="uninstall_no_dialog">Системный диалог удаления не найден, открываю настройки приложения.</string>
-    <string name="uninstall_failed">ОШИБКА: не удалось открыть удаление приложения (%1$s).</string>
     <string name="factory_opening">Открываю инженерное меню (стр. %1$d).</string>
     <string name="factory_not_found">ОШИБКА: не найдено com.homwee.factory/.FactoryActivity на этом устройстве/прошивке.</string>
     <string name="factory_denied">ОШИБКА: нет прав на запуск инженерного меню из обычного приложения (%1$s). Используйте adb shell am start ...</string>
@@ -173,7 +171,7 @@
     <string name="dlg_mboot_step_restart">Нажмите «Перезагрузить ТВ»: приложение перезагрузит ТВ через adb (первый раз ТВ спросит, разрешить ли отладку: выберите «Всегда разрешать»). Или выключите ТВ из розетки и включите снова.</string>
     <string name="dlg_mboot_step_commands">Держите Enter, пока не появится приглашение MBOOT, и введите команды:</string>
     <string name="dlg_mboot_order">Сначала check.txt (проверка без записи, в конце CHECK_OK) и только потом flash.txt.</string>
-    <string name="dlg_mboot_fat">Если check.txt остановился на шаге 3 с «Invalid FAT entry», MBOOT не читает файл с накопителя: скопируйте файлы RootMate (образы, *.CRC, *.txt) на ПК, отформатируйте накопитель в FAT32 и повторите. Файлы, записанные MBOOT, с накопителя не удаляйте.</string>
+    <string name="dlg_mboot_fat">Если check.txt остановился на шаге 3 с «Invalid FAT entry», MBOOT не читает файл с накопителя: скопируйте файлы Telly (образы, *.CRC, *.txt) на ПК, отформатируйте накопитель в FAT32 и повторите. Файлы, записанные MBOOT, с накопителя не удаляйте.</string>
     <string name="stage_no_permission">Нет доступа к файлам: выдайте разрешение «Доступ ко всем файлам».</string>
     <string name="stage_drive_missing">Выбранный накопитель %1$s не подключён. Вставьте его в ТВ.</string>
     <string name="stage_drive_other">Выбранный накопитель %1$s не подключён, вставлен другой: %2$s.</string>
@@ -202,17 +200,18 @@
     <string name="perm_adb_no_port">adb не слушает порт 5555</string>
     <string name="perm_adb_open_about">Открыть «Об устройстве»</string>
     <string name="perm_adb_open_dev">Открыть «Для разработчиков»</string>
-    <string name="perm_adb_hint_dev">Нажмите 7 раз на «Сборка», пока не появится «Вы стали разработчиком», затем вернитесь в RootMate.</string>
-    <string name="perm_adb_hint_usb">Включите «Отладка по USB» (раздел «Отладка»), затем вернитесь в RootMate.</string>
+    <string name="perm_adb_hint_dev">Нажмите 7 раз на «Сборка», пока не появится «Вы стали разработчиком», затем вернитесь в Telly.</string>
+    <string name="perm_adb_hint_usb">Включите «Отладка по USB» (раздел «Отладка»), затем вернитесь в Telly.</string>
     <string name="agent_cmd_log">Команда по adb: %1$s</string>
     <!-- Power LED screen (LedActivity, ledctl kernel module) -->
-    <string name="led_button">Индикатор питания</string>
-    <string name="led_title">Индикатор питания</string>
-    <string name="led_module_title">Tuvio power LED control</string>
+    <string name="led_open">Настроить</string>
+    <string name="led_section_module">Модуль</string>
+    <string name="led_title">Индикатор питания Tuvio</string>
+    <string name="led_module_title">Управление индикатором Tuvio</string>
     <string name="led_module_desc">Индикатор питания телевизоров Tuvio TO48/55/65UFGCV5, без изменения boot-образа. Нужен root (Magisk).</string>
     <string name="led_status_checking">Проверка…</string>
     <string name="led_status_installing">Установка…</string>
-    <string name="led_status_no_root">Нет root-доступа: разрешите RootMate в Magisk</string>
+    <string name="led_status_no_root">Нет root-доступа: разрешите Telly в Magisk</string>
     <string name="led_status_not_installed">Не установлен</string>
     <string name="led_status_ok">Работает (версия %1$s)</string>
     <string name="led_status_update">Установлена другая сборка модуля (%1$s)</string>
@@ -227,12 +226,14 @@
     <string name="led_cancel">Отмена</string>
     <string name="led_sleep_title">В режиме сна</string>
     <string name="led_on_title">В работе</string>
-    <string name="led_mode_off">Не горит</string>
-    <string name="led_mode_on">Горит</string>
-    <string name="led_mode_blink">Мигает</string>
+    <string name="led_mode_off">ВЫКЛ</string>
+    <string name="led_mode_on">ВКЛ</string>
     <string name="led_level">Яркость: %1$d %%</string>
-    <string name="led_speed">Скорость: ×%1$s</string>
-    <string name="led_sleep_blink_note">Во сне индикатор мигает на полной яркости: пока процессор спит, мигание делает сам ШИМ, а тусклое свечение и мигание ему одновременно недоступны.</string>
-    <string name="led_on_note">«Не горит» — состояние из прошивки. После включения экрана прошивка на долю секунды показывает свой режим, затем модуль возвращает выбранный.</string>
     <string name="led_set_failed">Не удалось применить настройку</string>
+    <string name="tab_root">root</string>
+    <string name="tab_addons">Дополнения</string>
+    <string name="addon_led_desc">Настройки свечения логотипа Tuvio. Модуль ядра.</string>
+    <string name="led_need_root">Нужен root: установите Magisk и разрешите ему доступ для Telly</string>
+    <string name="led_unsupported">Модуль не поддерживается на этом ТВ</string>
+    <string name="exit_press_back_again">Нажмите «Назад» ещё раз, чтобы выйти</string>
 </resources>

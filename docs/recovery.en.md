@@ -80,7 +80,7 @@ adb shell "/debug_ramdisk/su -c id"
 
 Possible causes: **the wrong slot was flashed** (compare `ro.boot.slot_suffix` with the partition you wrote), another boot slot is running, Magisk did not finish additional setup, **magiskinit** mishandled **skip_initramfs**, the image comes from another firmware version. Do not use **Direct Install** to "fix" things blindly. Procedure: [full guide](guide.en.md).
 
-## 4. RootMate reports "no skip_initramfs string" or another error
+## 4. Telly reports "no skip_initramfs string" or another error
 
 - **"/init of the image has no skip_initramfs string: not a Magisk-patched image"**: you picked an original `BOOT_*.IMG` with the "fix only" button. For an original image use the left button **Select BOOT_\*.IMG** (auto patch); for an image already patched by Magisk use the right one. If the image was patched by a Magisk version without that string, the fix is not needed or not supported. No file is created either way.
 - **"Magisk is not installed (or magiskboot not found)"**: press **Download and install Magisk**.
@@ -105,7 +105,7 @@ fatls usb 0:1
 
 - Do not run **mmc write.p** until the partition name and size are confirmed.
 - **0x1F00000** is the boot size for the studied device, not a mandatory size for every MT5889.
-- The image patched by RootMate keeps the original length (32505856 bytes). If **fatload** loaded a different byte count, abort.
+- The image patched by Telly keeps the original length (32505856 bytes). If **fatload** loaded a different byte count, abort.
 - On a CRC mismatch after read-back, immediately restore the **original** image from backup without rebooting.
 - **0x25000000** is the RAM address in the confirmed configuration; verify with **printenv bootcmd**, **bdinfo**, **get_mmap**. Do not copy arbitrary addresses from other guides.
 

@@ -1,6 +1,6 @@
 id=ledctl
-name=Tuvio power LED control
+name=Индикатор питания Tuvio
 version=1.0
 versionCode=1
-author=RootMate
-description=Power LED for Tuvio TO48/55/65UFGCV5: off, on or blink in standby and while on, brightness, without patching boot. Settings: RootMate app or ledctl.conf.
+author=Telly
+description=Настройки свечения логотипа Tuvio (индикатор питания) для TO48/55/65UFGCV5: ВКЛ/ВЫКЛ в режиме сна и в работе, яркость, без изменения boot. Настройка: приложение Telly или ledctl.conf.

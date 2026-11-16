@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Seven colour bars of a TV test card: the one bright detail of the app. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="140dp"
+    android:height="12dp"
+    android:viewportWidth="70"
+    android:viewportHeight="6">
+    <path android:fillColor="#E4E2DC" android:pathData="M0,0h10v6h-10z" />
+    <path android:fillColor="#E3D34B" android:pathData="M10,0h10v6h-10z" />
+    <path android:fillColor="#4CCFD0" android:pathData="M20,0h10v6h-10z" />
+    <path android:fillColor="#4CC55C" android:pathData="M30,0h10v6h-10z" />
+    <path android:fillColor="#C34CC6" android:pathData="M40,0h10v6h-10z" />
+    <path android:fillColor="#D74B4B" android:pathData="M50,0h10v6h-10z" />
+    <path android:fillColor="#4A5AD6" android:pathData="M60,0h10v6h-10z" />
+</vector>

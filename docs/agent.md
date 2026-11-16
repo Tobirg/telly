@@ -1,6 +1,6 @@
-# RootMate for agents
+# Telly for agents
 
-How an AI agent (or any script) roots the TV with RootMate without the remote: RootMate takes commands over adb
+How an AI agent (or any script) roots the TV with Telly without the remote: Telly takes commands over adb
 and answers in JSON, the MBOOT console is driven over the UART adapter. The flow and the scripts are the same as in
 the "Semi-auto" mode of the app ([guide.en.md](guide.en.md), section 7): only who presses the buttons changes.
 
@@ -13,7 +13,7 @@ the "Semi-auto" mode of the app ([guide.en.md](guide.en.md), section 7): only wh
 3. Turn on developer options (Settings → System → About → press "Build" 7 times) and "USB debugging" (Settings →
    System → Developer options). On this TV that also makes adbd listen on tcp 5555, so `adb connect <tv-ip>:5555` works.
 4. The first `adb connect` shows "Allow USB debugging?" on the TV: "Always allow".
-5. After the agent installed RootMate (Setup): turn UART on once, RootMate → "Open the engineering menu" → Design Mode → Uart → On
+5. After the agent installed Telly (Setup): turn UART on once, Telly → "Open the engineering menu" → Design Mode → Uart → On
    ([guide.en.md](guide.en.md), section 6).
 6. Approve the steps that write the eMMC (see [Safety](#safety)) when the agent asks.
 7. After a flash that wiped the data: set the TV up again and turn developer options and USB debugging back on (step 3).
@@ -23,22 +23,22 @@ Everything else the agent can do itself.
 ## Tools on the PC
 
 - `adb` (platform-tools).
-- [scripts/agent/rootmate.py](../scripts/agent/rootmate.py): one RootMate command, prints the JSON answer. Exit code 0 = ok, 1 = error answer, 2 = no answer.
+- [scripts/agent/telly.py](../scripts/agent/telly.py): one Telly command, prints the JSON answer. Exit code 0 = ok, 1 = error answer, 2 = no answer.
 - [scripts/agent/mboot.py](../scripts/agent/mboot.py): the MBOOT console over UART (`pip install pyserial`).
-  Port: `--port COM8` / `/dev/ttyUSB0`, or `ROOTMATE_UART`. The whole session is appended to `scripts/agent/mboot.log`.
+  Port: `--port COM8` / `/dev/ttyUSB0`, or `TELLY_UART`. The whole session is appended to `scripts/agent/mboot.log`.
 
 ## Setup
 
 ```
 adb connect <tv-ip>:5555
-adb install -r RootMate-X.Y.apk
+adb install -r Telly-X.Y.apk
 adb shell appops set --uid com.tobirg.rootmate MANAGE_EXTERNAL_STORAGE allow
 adb shell appops set com.tobirg.rootmate REQUEST_INSTALL_PACKAGES allow
-adb install -r Magisk-vX.Y.apk           # or let RootMate download it (button "Download and install Magisk")
-python scripts/agent/rootmate.py open    # RootMate on screen
+adb install -r Magisk-vX.Y.apk           # or let Telly download it (button "Download and install Magisk")
+python scripts/agent/telly.py open    # Telly on screen
 ```
 
-RootMate only has to be open (either of its two modes) while the agent works. From the first command on it shows no
+Telly only has to be open (either of its two modes) while the agent works. From the first command on it shows no
 dialogs (the same data is in the JSON answers), keeps the screen on and writes every command except `status` and `log` into its log, so a
 person watching the TV sees what the agent does. A key press on the remote gives the app back to the person.
 Commands sent while it is closed answer with an error that says how to open it. `open` is safe to repeat.
@@ -46,7 +46,7 @@ Commands sent while it is closed answer with an error that says how to open it. 
 
 ## Protocol
 
-Raw form (what `rootmate.py` sends):
+Raw form (what `telly.py` sends):
 
 ```
 adb shell am broadcast -n com.tobirg.rootmate/.AgentReceiver -a com.tobirg.rootmate.AGENT --es cmd status
@@ -66,7 +66,7 @@ requires `android.permission.DUMP`: the adb shell has it, ordinary apps do not, 
 | `log` | `--ei lines N` | the last N lines of the on-screen log (boot_patch.sh and magiskboot output) |
 
 `patch`, `fix` and the patch started by `next` run in the background: poll `status` until `"busy": false`
-(`rootmate.py wait` does that), then read `warnings` and `log`.
+(`telly.py wait` does that), then read `warnings` and `log`.
 
 Status fields:
 
@@ -104,8 +104,8 @@ Loop on `status` and act on `stage`:
 | `PATCHED` | run in MBOOT `check.txt`; only on `CHECK_OK`: ask the human, then run `flash.txt` |
 | `FLASH_DONE` | verify root: `adb shell su -c id` (the first time Magisk asks on the TV screen to allow the shell) |
 
-After a flash with a data wipe (`verified_boot_state` was not `orange`) adb, RootMate and Magisk are gone with the data:
-the human sets the TV up and turns USB debugging on again, then the agent runs Setup again (RootMate, `appops`,
+After a flash with a data wipe (`verified_boot_state` was not `orange`) adb, Telly and Magisk are gone with the data:
+the human sets the TV up and turns USB debugging on again, then the agent runs Setup again (Telly, `appops`,
 Magisk); `status` then shows `FLASH_DONE` from the `FLASH.OK` on the drive.
 
 ### Running a script in MBOOT
@@ -118,7 +118,7 @@ python scripts/agent/mboot.py --port COM8 udstar probe.txt         # usb start 1
 ```
 
 - probe.txt, backup.txt, flash.txt and rollback.txt end with `reset`: the TV boots Android by itself. Wait for it:
-  `adb connect <tv-ip>:5555`, then `adb shell getprop sys.boot_completed` = `1`, then `rootmate.py open` and `status`.
+  `adb connect <tv-ip>:5555`, then `adb shell getprop sys.boot_completed` = `1`, then `telly.py open` and `status`.
 - check.txt stays in MBOOT. Run flash.txt right after it in the same session (`mboot.py udstar flash.txt`), or
   `mboot.py reset` to go back to Android.
 - `udstar` prints `Saving Environment to MMC` when it starts any script: that is MBOOT saving its own variables,
@@ -161,7 +161,7 @@ push the human's files back, and `choose --id <new id>`.
 
 | symptom | cause |
 |---|---|
-| `RootMate is not open` | `rootmate.py open` |
+| `Telly is not open` | `telly.py open` |
 | `usb start 1` finds no storage device | the drive is in another USB port, or not FAT32 |
 | `catch` times out | the TV did not reboot, or the UART wiring / port is wrong (115200 8N1) |
 | `adb connect` refused after a reboot | USB debugging is off again, or the TV has a new IP |

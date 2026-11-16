@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Fill of the mode switch buttons: the selected mode is filled with the accent colour. -->
+<!-- Fill of the segmented switch buttons: selected = paper, otherwise tonal; focus lightens. -->
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:color="@color/accent" android:state_checked="true" />
-    <item android:color="@android:color/transparent" />
+    <item android:color="@color/paper" android:state_checked="true" />
+    <item android:color="@color/tonal_focus" android:state_focused="true" />
+    <item android:color="@color/surface_alt" />
 </selector>

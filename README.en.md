@@ -2,26 +2,26 @@
 
 🇷🇺 [Русская версия](README.md)
 
-Rooting TVs with the **MT5889** SoC and the **MStar MBOOT (U-Boot 2011.06)** bootloader using Magisk. The **RootMate** app on the TV itself backs up the boot partitions, patches the image and prepares the flash scripts, and you run them in the bootloader console over UART (the adapter connects to HDMI). Everything that depends on the model (partitions, RAM addresses, the active slot) is taken from the TV itself.
+Rooting TVs with the **MT5889** SoC and the **MStar MBOOT (U-Boot 2011.06)** bootloader using Magisk. The **Telly** app on the TV itself backs up the boot partitions, patches the image and prepares the flash scripts, and you run them in the bootloader console over UART (the adapter connects to HDMI). Everything that depends on the model (partitions, RAM addresses, the active slot) is taken from the TV itself.
 
 **Tested on:** Tuvio TO55UFGCV5, DEXP 55OCG. It may work on other TVs with MT5889 and MBOOT, but that is not tested: start with the backup and the dry-run `check.txt`.
 
-<img src="docs/img/01-main.png" width="720" alt="RootMate: main screen">
+<img src="docs/img/01-main.png" width="720" alt="Telly: main screen">
 
 ## Start here
 
 - 📖 [Guide: rooting and rollback](docs/guide.en.md)
-- ⬇️ [Download RootMate](https://github.com/Tobirg/changhong_m9617_root/releases/latest) (the APK is built by [GitHub Actions](https://github.com/Tobirg/changhong_m9617_root/actions))
+- ⬇️ [Download Telly](https://github.com/Tobirg/telly/releases/latest) (the APK is built by [GitHub Actions](https://github.com/Tobirg/telly/actions))
 - 🛟 [Recovery and troubleshooting](docs/recovery.en.md)
 
 ## How it works
 
-1. **UART.** A home-made USB–UART adapter connects to an HDMI port of the TV; UART is turned on in the engineering menu (a button in RootMate).
-2. **RootMate on the TV.** The app asks for its permissions (files, installing Magisk, developer options and USB debugging) and installs the latest Magisk by itself.
+1. **UART.** A home-made USB–UART adapter connects to an HDMI port of the TV; UART is turned on in the engineering menu (a button in Telly).
+2. **Telly on the TV.** The app asks for its permissions (files, installing Magisk, developer options and USB debugging) and installs the latest Magisk by itself.
 3. **Semi-auto, four steps.** Probe → backup → patch → check and flash. At every step the app writes a script to the USB drive and reboots the TV by itself, and you type two commands in the MBOOT console: `usb start 1` and `udstar <script>`.
 4. **Data wipe and Magisk.** If the TV was not unlocked before, the flash ends with a data wipe; after it you install Magisk again and have root.
 
-<img src="docs/img/07-wizard-continue.png" width="720" alt="RootMate recognised the step and offers to continue">
+<img src="docs/img/07-wizard-continue.png" width="720" alt="Telly recognised the step and offers to continue">
 
 ## How the scripts guard against mistakes
 
@@ -36,7 +36,7 @@ Rooting TVs with the **MT5889** SoC and the **MStar MBOOT (U-Boot 2011.06)** boo
 - A PC with a terminal (MobaXterm, PuTTY): only for the MBOOT console.
 - A FAT32 USB drive, a single partition.
 
-## What RootMate does
+## What Telly does
 
 | | |
 | --- | --- |
@@ -44,14 +44,14 @@ Rooting TVs with the **MT5889** SoC and the **MStar MBOOT (U-Boot 2011.06)** boo
 | **Manual** | full patch of a picked `BOOT_*.IMG` with the `skip_initramfs` fix, or only the fix for an image Magisk already patched |
 | **Magisk** | downloads the latest release from GitHub and installs it |
 | **Reboot into MBOOT** | through the TV's own adb, no root needed |
-| **Power LED** | Tuvio TO48/55/65UFGCV5, after root: off / on / blink in standby and while on, brightness and blink speed, no boot changes: [docs/led.md](docs/led.md) (in Russian) |
+| **Power LED** | Tuvio TO48/55/65UFGCV5, after root: off / on in standby and while on, brightness in 5 % steps, no boot changes: [docs/led.md](docs/led.md) (in Russian) |
 | **Agents** | the same process over adb with JSON answers, plus scripts for the MBOOT console: [docs/agent.md](docs/agent.md) |
 
-The `skip_initramfs` fix: this MBOOT version puts `skip_initramfs` on the kernel command line, which makes Magisk pick the wrong boot mode. RootMate changes it to `skip_initramfz` inside magiskinit.
+The `skip_initramfs` fix: this MBOOT version puts `skip_initramfs` on the kernel command line, which makes Magisk pick the wrong boot mode. Telly changes it to `skip_initramfz` inside magiskinit.
 
 ## Extras
 
-- [Guide for agents (AI, scripts): RootMate over adb, MBOOT over UART](docs/agent.md)
+- [Guide for agents (AI, scripts): Telly over adb, MBOOT over UART](docs/agent.md)
 - [skip_initramfs fix via adb shell](scripts/skipfix.sh) (fallback)
 - [App development notes](docs/app.md) (in Russian)
 - [Power LED: the ledctl kernel module](docs/led.md) (in Russian)

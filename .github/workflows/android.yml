@@ -1,4 +1,4 @@
-name: Build RootMate APK
+name: Build Telly APK
 
 on:
   push:
@@ -44,11 +44,11 @@ jobs:
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: RootMate
-          path: app/build/outputs/apk/release/RootMate-*.apk
+          name: Telly
+          path: app/build/outputs/apk/release/Telly-*.apk
 
       - name: Publish release asset
         if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v2
         with:
-          files: app/build/outputs/apk/release/RootMate-*.apk
+          files: app/build/outputs/apk/release/Telly-*.apk

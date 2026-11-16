@@ -72,7 +72,7 @@ class Console:
 
 def main():
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    p.add_argument('--port', default=os.environ.get('ROOTMATE_UART', 'COM8' if os.name == 'nt' else '/dev/ttyUSB0'))
+    p.add_argument('--port', default=os.environ.get('TELLY_UART', 'COM8' if os.name == 'nt' else '/dev/ttyUSB0'))
     p.add_argument('--timeout', type=int)
     p.add_argument('--log', default=os.path.join(os.path.dirname(os.path.abspath(__file__)), 'mboot.log'))
     p.add_argument('action', choices=['catch', 'run', 'udstar', 'reset'])

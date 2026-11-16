@@ -1,10 +1,10 @@
-# Rooting MT5889 with RootMate
+# Rooting MT5889 with Telly
 
 🇷🇺 [Русская версия](guide.md)
 
 **Important:** rooting risks irreversible data loss and a bricked TV. On the tested unit, changing the Verified Boot state required a full data reset because of incompatible encryption keys. The method is tested on Tuvio TO55UFGCV5 and DEXP 55OCG; it is not guaranteed to work on other models and firmware.
 
-**Overview.** You connect the UART adapter to HDMI and turn UART on in the TV's engineering menu. Then the **RootMate** app on the TV walks you through four steps: **probe → backup → patch → check and flash**. At every step it writes a script to the USB drive, and you run it in the MBOOT bootloader console over UART with two commands. Everything that depends on the particular TV (partitions, sizes, RAM addresses, the active slot) the app takes from the TV itself. Every script checks first and writes only after that; any mismatch stops it. The PC is needed only for the UART terminal.
+**Overview.** You connect the UART adapter to HDMI and turn UART on in the TV's engineering menu. Then the **Telly** app on the TV walks you through four steps: **probe → backup → patch → check and flash**. At every step it writes a script to the USB drive, and you run it in the MBOOT bootloader console over UART with two commands. Everything that depends on the particular TV (partitions, sizes, RAM addresses, the active slot) the app takes from the TV itself. Every script checks first and writes only after that; any mismatch stops it. The PC is needed only for the UART terminal.
 
 The manual way (your own MBOOT commands, patching a picked file) stays as a fallback: [appendices at the end](#appendix-a-rootmate-manual-mode).
 
@@ -17,7 +17,7 @@ The manual way (your own MBOOT commands, patching a picked file) stays as a fall
 - A UART terminal: MobaXterm, PuTTY or similar (it must send keystrokes immediately, not via a separate Send button).
 - A PC: for the UART terminal and copying files.
 - A USB drive formatted as **FAT32**, a single partition.
-- Internet on the TV (RootMate downloads Magisk by itself) or the Magisk APK on the drive.
+- Internet on the TV (Telly downloads Magisk by itself) or the Magisk APK on the drive.
 
 
 ## 2. Build the UART adapter
@@ -37,7 +37,7 @@ Do not connect the adapter's VCC.
 
 On a PC, format the drive as **FAT32**, a single partition. Download and copy to it:
 
-- **RootMate** (the `RootMate-*.apk` file): [latest release](https://github.com/Tobirg/changhong_m9617_root/releases/latest).
+- **Telly** (the `Telly-*.apk` file): [latest release](https://github.com/Tobirg/telly/releases/latest).
 - Optionally the [Magisk APK](https://github.com/topjohnwu/Magisk/releases/latest): needed if the TV has no internet.
 
 > **Do not delete files MBOOT wrote to the drive** (`PTABLE.BIN`, `ENV.TXT`, `*.IMG`, `*.CRC`, `*.OK`), even when you no longer need them. MBOOT marks the end of a file in the FAT with `0xFFFFFFFF`; if such a file is deleted and Android reuses its space, MBOOT cannot read new files (`Invalid FAT entry`). To start over, copy what you need to a PC and format the whole drive. Files the app wrote (`*.txt`, `*_magisk_patched*.img`) may be deleted.
@@ -53,22 +53,22 @@ On a PC, format the drive as **FAT32**, a single partition. Download and copy to
 On the PC open a terminal on the adapter's COM port with **115200, 8N1, no flow control**.
 
 
-## 5. Install RootMate and prepare the TV
+## 5. Install Telly and prepare the TV
 
-Open the stock file manager on the TV and install **RootMate** (`RootMate-*.apk`) from the drive (allow installs from unknown sources). If the file manager cannot open APKs, use `adb install`.
+Open the stock file manager on the TV and install **Telly** (`Telly-*.apk`) from the drive (allow installs from unknown sources). If the file manager cannot open APKs, use `adb install`.
 <img width="332" height="276" alt="image" src="https://github.com/user-attachments/assets/6d52afa9-80ed-493b-a0e8-b74b397f525e" />
 
-Open RootMate. On the first start it shows the **Permissions** screen; grant all three:
+Open Telly. On the first start it shows the **Permissions** screen; grant all three:
 
 - **All files access**: working with the files on the drive.
 - **Install unknown apps**: installing Magisk.
 - **Developer options and USB debugging (adb)**: so the app can reboot the TV into MBOOT by itself. The button opens the right settings page: first "About", where you press **Build** 7 times, then "Developer options", where you turn on **USB debugging**.
 
-<img src="img/02-permissions.png" width="720" alt="RootMate permissions screen">
+<img src="img/02-permissions.png" width="720" alt="Telly permissions screen">
 
 The main screen: buttons on the left, the log on the right.
 
-<img src="img/01-main.png" width="720" alt="RootMate main screen">
+<img src="img/01-main.png" width="720" alt="Telly main screen">
 
 Press **Download and install Magisk** (Скачать и установить Magisk). The app finds the latest release on GitHub, downloads it and starts the install; confirm in the system dialog (**Install**). A line **Magisk installed** with the version number appears under the button. You do not need to open Magisk or patch anything in it.
 
@@ -79,13 +79,13 @@ Press **Download and install Magisk** (Скачать и установить Ma
 
 On many firmwares UART is off in the TV: the terminal stays silent and you cannot get into the MBOOT console. Turn it on before the steps, from Android:
 
-1. In RootMate press **Open the engineering menu** (Открыть инженерное меню, caption "Turns UART on"). The **Design Mode** page of the engineering menu opens.
+1. In Telly press **Open the engineering menu** (Открыть инженерное меню, caption "Turns UART on"). The **Design Mode** page of the engineering menu opens.
 2. Select the **Uart** line and switch it to **On** with the remote's arrows. Do not touch the other items.
 3. Leave with Back (you may need to press it twice).
 
 <img src="img/10-uart.png" width="720" alt="Engineering menu, Design Mode, Uart On">
 
-The setting survives reboots. Check: open the terminal (115200, 8N1) and reboot the TV (with the button in RootMate, via **Settings → System → Restart**, or by unplugging it); the boot log must scroll in the terminal. If it stays empty, check that TX and RX are not swapped and that the adapter is in HDMI port 3.
+The setting survives reboots. Check: open the terminal (115200, 8N1) and reboot the TV (with the button in Telly, via **Settings → System → Restart**, or by unplugging it); the boot log must scroll in the terminal. If it stays empty, check that TX and RX are not swapped and that the adapter is in HDMI port 3.
 
 
 ## 7. Semi-auto: four steps
@@ -102,9 +102,9 @@ Steps 1, 2 and 4 end with running a script in the MBOOT console. Step 1 describe
 
 ### Step 1. Probe
 
-1. In RootMate press **Create the probe script** (Создать скрипт разведки). The app writes `probe.txt` to the drive and shows a hint with the commands.
+1. In Telly press **Create the probe script** (Создать скрипт разведки). The app writes `probe.txt` to the drive and shows a hint with the commands.
 2. **Get into the MBOOT console.** Open the UART terminal on the PC, make its window active and **hold Enter**. Keep holding it and reboot the TV in any way:
-   - the **Reboot the TV** button (Перезагрузить ТВ) in RootMate's hint (through adb; the first time the TV asks "Allow USB debugging?": choose **Always allow**);
+   - the **Reboot the TV** button (Перезагрузить ТВ) in Telly's hint (through adb; the first time the TV asks "Allow USB debugging?": choose **Always allow**);
    - **Settings → System → Restart** (at the bottom of the list) → confirm;
    - unplug the TV and plug it in again.
 
@@ -133,7 +133,7 @@ The probe writes nothing to the eMMC: it saves the partition table `PTABLE.BIN` 
 
 ### Step 2. Backup
 
-1. After the boot open RootMate: it sees the probe result and offers to continue. Button **Create the backup script** (Создать скрипт бэкапа): the app writes `backup.txt` with the names, sizes and RAM addresses of your very TV.
+1. After the boot open Telly: it sees the probe result and offers to continue. Button **Create the backup script** (Создать скрипт бэкапа): the app writes `backup.txt` with the names, sizes and RAM addresses of your very TV.
 2. Get into the MBOOT console as in step 1: hold Enter in the terminal and reboot the TV, keep holding Enter until `<< MT5889 >>#`.
 3. Type:
    ~~~text
@@ -153,7 +153,7 @@ The script saves `boot_a`, `boot_b` and `misc` to `BOOT_A.IMG`, `BOOT_B.IMG`, `M
 
 ### Step 3. Patch
 
-This step happens in Android only, no MBOOT. Open RootMate after the boot and press **Patch the active slot image and create the flash scripts** (Пропатчить образ активного слота и создать скрипты прошивки; needs Magisk). The app by itself:
+This step happens in Android only, no MBOOT. Open Telly after the boot and press **Patch the active slot image and create the flash scripts** (Пропатчить образ активного слота и создать скрипты прошивки; needs Magisk). The app by itself:
 
 - takes the image of the **active slot** from the backup (the one the TV boots from now; flashing the other slot is useless);
 - runs `boot_patch.sh` from the installed Magisk and applies the `skip_initramfs` fix (below);
@@ -164,7 +164,7 @@ It takes about a minute, the buttons are locked meanwhile. Do not leave the app.
 
 <img src="img/08-wizard-mboot.png" width="720" alt="Hint: how to run the scripts in MBOOT">
 
-> **What the skip_initramfs fix is.** This MBOOT version puts `skip_initramfs` on the kernel command line, which makes Magisk wrongly choose Legacy SAR instead of First Stage Init. Replacing one character in **magiskinit** (the `init` file in the ramdisk) helps: `skip_initramfs` → `skip_initramfz`. RootMate does it with `magiskboot` from Magisk itself.
+> **What the skip_initramfs fix is.** This MBOOT version puts `skip_initramfs` on the kernel command line, which makes Magisk wrongly choose Legacy SAR instead of First Stage Init. Replacing one character in **magiskinit** (the `init` file in the ramdisk) helps: `skip_initramfs` → `skip_initramfz`. Telly does it with `magiskboot` from Magisk itself.
 
 ### Step 4. Check and flash
 
@@ -186,7 +186,7 @@ It takes about a minute, the buttons are locked meanwhile. Do not leave the app.
 
 > ⚠️ **Data wipe.** If the TV is not unlocked yet (the boot state is not `orange`), `flash.txt` **deletes all user data** before the reboot: without it the TV does not boot because of the encryption keys. Save everything you need beforehand.
 
-After the wipe set the TV up again, developer options and debugging included; RootMate and Magisk are gone with the data. Install Magisk again: the APK from the drive, or RootMate (install it again from the drive) → **Download and install Magisk**. **Right after installing press "Open"**: there is no icon in the stock launcher (later it can be opened from Android settings). Agree to the additional setup when asked.
+After the wipe set the TV up again, developer options and debugging included; Telly and Magisk are gone with the data. Install Magisk again: the APK from the drive, or Telly (install it again from the drive) → **Download and install Magisk**. **Right after installing press "Open"**: there is no icon in the stock launcher (later it can be opened from Android settings). Agree to the additional setup when asked.
 
 If the TV was already unlocked, there is no wipe, and the app shows "Flashing finished (FLASH.OK)".
 
@@ -205,7 +205,7 @@ The slot matches the one you flashed, `verifiedbootstate` is `orange`, `su` retu
 
 | What you see | What to do |
 | --- | --- |
-| `Invalid FAT entry` (most often `check.txt` stops at step 3) | MBOOT cannot read a file from the drive: files MBOOT wrote were deleted from it. Copy the RootMate files to a PC, format the drive as FAT32 and go through the steps again. |
+| `Invalid FAT entry` (most often `check.txt` stops at step 3) | MBOOT cannot read a file from the drive: files MBOOT wrote were deleted from it. Copy the Telly files to a PC, format the drive as FAT32 and go through the steps again. |
 | A script stopped at `cmp` | A check failed, nothing after it ran. The last `STEP…`/`BACKUP_…` line shows which one. Create the script again in the app. |
 | The terminal stays silent while the TV boots | UART is off in the TV (step 6), TX/RX are swapped, or the adapter is not in HDMI port 3. |
 | `usb start 1` finds 0 devices | The drive is in the wrong USB port or is not FAT32. |
@@ -231,7 +231,7 @@ For agents (AI or scripts) that go through these steps over adb and UART: [agent
 
 ---
 
-## Appendix A. RootMate manual mode
+## Appendix A. Telly manual mode
 
 The **Manual** switch (Ручной) is for when you already have your own boot image or one patched in Magisk itself. No MBOOT scripts are created in this mode: flash by hand, [appendix B](#appendix-b-manual-mboot-commands). The active slot is shown above the buttons: flash the image of exactly that slot.
 
@@ -257,7 +257,7 @@ adb shell sh /data/local/tmp/skipfix.sh magisk_patched-....img
 
 ## Appendix B. Manual MBOOT commands
 
-Below `X` is the letter of the active slot (`a` or `b`): RootMate shows it in the manual mode, over adb it is `adb shell getprop ro.boot.slot_suffix`. Switching slots (`_a` ↔ `_b`) is not used: on the studied TV it hung.
+Below `X` is the letter of the active slot (`a` or `b`): Telly shows it in the manual mode, over adb it is `adb shell getprop ro.boot.slot_suffix`. Switching slots (`_a` ↔ `_b`) is not used: on the studied TV it hung.
 
 ### Backup by hand
 

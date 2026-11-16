@@ -1,4 +1,4 @@
-# RootMate: ROLLBACK, restore original boot into slot {{SLOT}}  ({{WHEN}})
+# Telly: ROLLBACK, restore original boot into slot {{SLOT}}  ({{WHEN}})
 # Run in MBOOT console:  usb start 1  then  udstar rollback.txt
 # Locks the bootloader again, writes the backup, wipes data (see recovery.md), resets.
 # original (backup): {{ORIG}}  crc32 {{CRC_ORIG}}
